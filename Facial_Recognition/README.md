@@ -1,0 +1,1 @@
+If you get error in installing face_recognition on windows. First download cmake application (https://cmake.org/download/) and install it after that run this command 'pip install face-recognition' to install face_recognition
