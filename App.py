@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, File, UploadFile, Form
+from fastapi.middleware.cors import CORSMiddleware
 from Facial_Recognition.main import (
     load_image_file,
     face_encodings,
@@ -10,6 +11,15 @@ from Facial_Recognition.main import (
 import numpy as np
 
 app = FastAPI()
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Replace with your React app's origin in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/store_encoding")
 async def store_encoding_api(userId: str = Form(...), file: UploadFile = File(...)):
@@ -43,7 +53,6 @@ async def update_profile_encoding_api(userId: str = Form(...), file: UploadFile 
 @app.post("/recognize")
 async def recognize_user_api(userId: str = Form(...), file: UploadFile = File(...)):
     user = await find_user(userId=userId)
-
     if not user:
         raise HTTPException(status_code=404, detail="User not found.")
     
@@ -58,9 +67,9 @@ async def recognize_user_api(userId: str = Form(...), file: UploadFile = File(..
     results = await compare_faces(profile_encoding=profile_encoding, unknown_encoding=unknown_encoding)
 
     if results[0]:
-        return {"message": "User matched!"}
+        return True
     
-    return {"message": "user mismatch!"}
+    return False
 
 @app.get("/")
 async def hello():
