@@ -2,10 +2,14 @@ from pydantic import BaseModel
 from typing import List
 import face_recognition
 from pymongo import MongoClient
+from dotenv import load_dotenv
+import os
 
-client = MongoClient("mongodb://localhost:27017/")
-db = client["dev"]  
-users_collection = db["face_recognition"]
+load_dotenv()
+
+client = MongoClient(os.getenv('MONGO_DB_URL'))
+db = client[os.getenv('DATABASE_NAME')]  
+users_collection = db[os.getenv('COLLECTION_NAME')]
 
 class UserSchema(BaseModel):
     userId: str

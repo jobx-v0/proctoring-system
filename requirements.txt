@@ -3,3 +3,4 @@ fastapi[all]
 uvicorn
 pymongo
 python-multipart
+python-dotenv
